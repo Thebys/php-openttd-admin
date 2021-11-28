@@ -3,8 +3,11 @@
 > Verison 0.1.0
 
 ## About repository
-This script is in some early phases - where it can do some commands on demand, my target is to make this `class OttdAdmin` a universal PHP controller - which can be extended to further processing requests - OpenTTD game events, and to be able to run as daemon service and also in on demand.
+This script is in some early phase now, it can run some commands on demand, but my target is to make this `class OttdAdmin` a universal PHP controller - which can be extended to further processing requests (OpenTTD game events), and to be able to run as daemon service or on demand.
 For example from web request...
+
+## Documentation
+See [OttdAdmin.php](OttdAdmin.php), better documentation will be added in future :)
 
 ## Prequisites:
 1. Have enabled admin port
@@ -22,6 +25,6 @@ For example from web request...
 
 
 -----
-> Feel free to discuss, open issue and for this repository  
+> Feel free to discuss, open issue and fork this repository  
 > @TooMeeNoo 2021
 
