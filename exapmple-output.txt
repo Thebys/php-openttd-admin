@@ -1,0 +1,391 @@
+Create: (OK)
+Connect: 
+bool(true)
+
+
+Join: 
+Array
+(
+    [NETWORK_GAME_ADMIN_VERSION] => 1
+    [ADMIN_UPDATE] => Array
+        (
+            [ADMIN_UPDATE_DATE] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 1
+                    [ADMIN_FREQUENCY_DAILY] => 1
+                    [ADMIN_FREQUENCY_WEEKLY] => 1
+                    [ADMIN_FREQUENCY_MONTHLY] => 1
+                    [ADMIN_FREQUENCY_QUARTERLY] => 1
+                    [ADMIN_FREQUENCY_ANUALLY] => 1
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 
+                )
+
+            [ADMIN_UPDATE_CLIENT_INFO] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 1
+                    [ADMIN_FREQUENCY_DAILY] => 
+                    [ADMIN_FREQUENCY_WEEKLY] => 
+                    [ADMIN_FREQUENCY_MONTHLY] => 
+                    [ADMIN_FREQUENCY_QUARTERLY] => 
+                    [ADMIN_FREQUENCY_ANUALLY] => 
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 1
+                )
+
+            [ADMIN_UPDATE_COMPANY_INFO] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 1
+                    [ADMIN_FREQUENCY_DAILY] => 
+                    [ADMIN_FREQUENCY_WEEKLY] => 
+                    [ADMIN_FREQUENCY_MONTHLY] => 
+                    [ADMIN_FREQUENCY_QUARTERLY] => 
+                    [ADMIN_FREQUENCY_ANUALLY] => 
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 1
+                )
+
+            [ADMIN_UPDATE_COMPANY_ECONOMY] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 1
+                    [ADMIN_FREQUENCY_DAILY] => 
+                    [ADMIN_FREQUENCY_WEEKLY] => 1
+                    [ADMIN_FREQUENCY_MONTHLY] => 1
+                    [ADMIN_FREQUENCY_QUARTERLY] => 1
+                    [ADMIN_FREQUENCY_ANUALLY] => 1
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 
+                )
+
+            [ADMIN_UPDATE_COMPANY_STATS] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 1
+                    [ADMIN_FREQUENCY_DAILY] => 
+                    [ADMIN_FREQUENCY_WEEKLY] => 1
+                    [ADMIN_FREQUENCY_MONTHLY] => 1
+                    [ADMIN_FREQUENCY_QUARTERLY] => 1
+                    [ADMIN_FREQUENCY_ANUALLY] => 1
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 
+                )
+
+            [ADMIN_UPDATE_CHAT] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 
+                    [ADMIN_FREQUENCY_DAILY] => 
+                    [ADMIN_FREQUENCY_WEEKLY] => 
+                    [ADMIN_FREQUENCY_MONTHLY] => 
+                    [ADMIN_FREQUENCY_QUARTERLY] => 
+                    [ADMIN_FREQUENCY_ANUALLY] => 
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 1
+                )
+
+            [ADMIN_UPDATE_CONSOLE] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 
+                    [ADMIN_FREQUENCY_DAILY] => 
+                    [ADMIN_FREQUENCY_WEEKLY] => 
+                    [ADMIN_FREQUENCY_MONTHLY] => 
+                    [ADMIN_FREQUENCY_QUARTERLY] => 
+                    [ADMIN_FREQUENCY_ANUALLY] => 
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 1
+                )
+
+            [ADMIN_UPDATE_CMD_NAMES] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 1
+                    [ADMIN_FREQUENCY_DAILY] => 
+                    [ADMIN_FREQUENCY_WEEKLY] => 
+                    [ADMIN_FREQUENCY_MONTHLY] => 
+                    [ADMIN_FREQUENCY_QUARTERLY] => 
+                    [ADMIN_FREQUENCY_ANUALLY] => 
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 
+                )
+
+            [ADMIN_UPDATE_CMD_LOGGING] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 
+                    [ADMIN_FREQUENCY_DAILY] => 
+                    [ADMIN_FREQUENCY_WEEKLY] => 
+                    [ADMIN_FREQUENCY_MONTHLY] => 
+                    [ADMIN_FREQUENCY_QUARTERLY] => 
+                    [ADMIN_FREQUENCY_ANUALLY] => 
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 1
+                )
+
+            [ADMIN_UPDATE_GAMESCRIPT] => Array
+                (
+                    [ADMIN_FREQUENCY_POLL] => 
+                    [ADMIN_FREQUENCY_DAILY] => 
+                    [ADMIN_FREQUENCY_WEEKLY] => 
+                    [ADMIN_FREQUENCY_MONTHLY] => 
+                    [ADMIN_FREQUENCY_QUARTERLY] => 
+                    [ADMIN_FREQUENCY_ANUALLY] => 
+                    [ADMIN_FREQUENCY_AUTOMATIC] => 1
+                )
+
+        )
+
+    [SERVER_NAME] => DellServerGame
+    [SERVER_VERSION] => 12.1
+    [IS_DEDICATED] => 1
+    [MAP_NAME] => 
+    [MAP_SEED] => 2666240974
+    [LANDSCAPE_TYPE] => 0
+    [START_YEAR] => 712223
+    [MAP_X] => 1024
+    [MAP_Y] => 1024
+)
+
+
+Get Date: 
+727672
+
+Get CMD names: 
+Array
+(
+    [0] => CmdBuildRailroadTrack
+    [1] => CmdRemoveRailroadTrack
+    [2] => CmdBuildSingleRail
+    [3] => CmdRemoveSingleRail
+    [4] => CmdLandscapeClear
+    [5] => CmdBuildBridge
+    [6] => CmdBuildRailStation
+    [7] => CmdBuildTrainDepot
+    [8] => CmdBuildSingleSignal
+    [9] => CmdRemoveSingleSignal
+    [10] => CmdTerraformLand
+    [11] => CmdBuildObject
+    [12] => CmdBuildTunnel
+    [13] => CmdRemoveFromRailStation
+    [14] => CmdConvertRail
+    [15] => CmdBuildRailWaypoint
+    [16] => CmdRenameWaypoint
+    [17] => CmdRemoveFromRailWaypoint
+    [18] => CmdBuildRoadStop
+    [19] => CmdRemoveRoadStop
+    [20] => CmdBuildLongRoad
+    [21] => CmdRemoveLongRoad
+    [22] => CmdBuildRoad
+    [23] => CmdBuildRoadDepot
+    [24] => CmdConvertRoad
+    [25] => CmdBuildAirport
+    [26] => CmdBuildDock
+    [27] => CmdBuildShipDepot
+    [28] => CmdBuildBuoy
+    [29] => CmdPlantTree
+    [30] => CmdBuildVehicle
+    [31] => CmdSellVehicle
+    [32] => CmdRefitVehicle
+    [33] => CmdSendVehicleToDepot
+    [34] => CmdSetVehicleVisibility
+    [35] => CmdMoveRailVehicle
+    [36] => CmdForceTrainProceed
+    [37] => CmdReverseTrainDirection
+    [38] => CmdClearOrderBackup
+    [39] => CmdModifyOrder
+    [40] => CmdSkipToOrder
+    [41] => CmdDeleteOrder
+    [42] => CmdInsertOrder
+    [43] => CmdChangeServiceInt
+    [44] => CmdBuildIndustry
+    [45] => CmdIndustryCtrl
+    [46] => CmdSetCompanyManagerFace
+    [47] => CmdSetCompanyColour
+    [48] => CmdIncreaseLoan
+    [49] => CmdDecreaseLoan
+    [50] => CmdWantEnginePreview
+    [51] => CmdEngineCtrl
+    [52] => CmdRenameVehicle
+    [53] => CmdRenameEngine
+    [54] => CmdRenameCompany
+    [55] => CmdRenamePresident
+    [56] => CmdRenameStation
+    [57] => CmdRenameDepot
+    [58] => CmdPlaceSign
+    [59] => CmdRenameSign
+    [60] => CmdTurnRoadVeh
+    [61] => CmdPause
+    [62] => CmdBuyShareInCompany
+    [63] => CmdSellShareInCompany
+    [64] => CmdBuyCompany
+    [65] => CmdFoundTown
+    [66] => CmdRenameTown
+    [67] => CmdDoTownAction
+    [68] => CmdTownCargoGoal
+    [69] => CmdTownGrowthRate
+    [70] => CmdTownRating
+    [71] => CmdTownSetText
+    [72] => CmdExpandTown
+    [73] => CmdDeleteTown
+    [74] => CmdOrderRefit
+    [75] => CmdCloneOrder
+    [76] => CmdClearArea
+    [77] => CmdMoneyCheat
+    [78] => CmdChangeBankBalance
+    [79] => CmdBuildCanal
+    [80] => CmdCreateSubsidy
+    [81] => CmdCompanyCtrl
+    [82] => CmdCustomNewsItem
+    [83] => CmdCreateGoal
+    [84] => CmdRemoveGoal
+    [85] => CmdSetGoalText
+    [86] => CmdSetGoalProgress
+    [87] => CmdSetGoalCompleted
+    [88] => CmdGoalQuestion
+    [89] => CmdGoalQuestionAnswer
+    [90] => CmdCreateStoryPage
+    [91] => CmdCreateStoryPageElement
+    [92] => CmdUpdateStoryPageElement
+    [93] => CmdSetStoryPageTitle
+    [94] => CmdSetStoryPageDate
+    [95] => CmdShowStoryPage
+    [96] => CmdRemoveStoryPage
+    [97] => CmdRemoveStoryPageElement
+    [98] => CmdScrollViewport
+    [99] => CmdStoryPageButton
+    [100] => CmdLevelLand
+    [101] => CmdBuildLock
+    [102] => CmdBuildSignalTrack
+    [103] => CmdRemoveSignalTrack
+    [104] => CmdGiveMoney
+    [105] => CmdChangeSetting
+    [106] => CmdChangeCompanySetting
+    [107] => CmdSetAutoReplace
+    [108] => CmdCloneVehicle
+    [109] => CmdStartStopVehicle
+    [110] => CmdMassStartStopVehicle
+    [111] => CmdAutoreplaceVehicle
+    [112] => CmdDepotSellAllVehicles
+    [113] => CmdDepotMassAutoReplace
+    [114] => CmdCreateGroup
+    [115] => CmdDeleteGroup
+    [116] => CmdAlterGroup
+    [117] => CmdAddVehicleGroup
+    [118] => CmdAddSharedVehicleGroup
+    [119] => CmdRemoveAllVehiclesGroup
+    [120] => CmdSetGroupFlag
+    [121] => CmdSetGroupLivery
+    [122] => CmdMoveOrder
+    [123] => CmdChangeTimetable
+    [124] => CmdSetVehicleOnTime
+    [125] => CmdAutofillTimetable
+    [126] => CmdSetTimetableStart
+    [127] => CmdOpenCloseAirport
+)
+
+
+CMD: pause: 
+Game is already paused.
+
+Get Client Info: 
+Array
+(
+    [0] => Array
+        (
+            [CLIENT_ID] => 1
+            [CLIENT_HOSTNAME] => 
+            [CLIENT_NAME] => TestAccount
+            [CLIENT_LANG] => 0
+            [JOIN_DATE] => 0
+            [PLAY_AS] => 255
+        )
+
+)
+
+
+Get Company Info: 
+Array
+(
+    [0] => Array
+        (
+            [COMPANY_ID] => 0
+            [COMPANY_NAME] => Brown & Co.
+            [MANAGER] => W. Brown
+            [COLOR] => 2
+            [HAVE_PASSWORD] => 
+            [START_DATE] => 1950
+            [IS_AI] => 
+        )
+
+    [1] => Array
+        (
+            [COMPANY_ID] => 1
+            [COMPANY_NAME] => TooMeeNoo Transport
+            [MANAGER] => TooMeeNoo
+            [COLOR] => 4
+            [HAVE_PASSWORD] => 
+            [START_DATE] => 1950
+            [IS_AI] => 
+        )
+
+)
+
+
+Get Company Economy: 
+Array
+(
+    [0] => Array
+        (
+            [COMPANY_ID] => 0
+            [MONEY] => 2206
+            [LOAN] => 100000
+            [INCOME] => -575
+            [DELIVER_THISQ] => 0
+            [VALUE_LASTQ] => 1
+            [PERF_LASTQ] => 30
+            [DELIVER_LASTQ] => 0
+            [VALUE_PREVQ] => 1
+            [PERF_PREVQ] => 30
+            [DELIVER_PREVQ] => 0
+        )
+
+    [1] => Array
+        (
+            [COMPANY_ID] => 1
+            [MONEY] => 11499777
+            [LOAN] => 0
+            [INCOME] => 284013
+            [DELIVER_THISQ] => 2078
+            [VALUE_LASTQ] => 12110313
+            [PERF_LASTQ] => 828
+            [DELIVER_LASTQ] => 9621
+            [VALUE_PREVQ] => 11902722
+            [PERF_PREVQ] => 831
+            [DELIVER_PREVQ] => 10731
+        )
+
+)
+
+
+Get Company Stats: 
+Array
+(
+    [0] => Array
+        (
+            [COMPANY_ID] => 0
+            [TRAINS_COUNT] => 0
+            [LORRIES_COUNT] => 0
+            [BUSSES_COUNT] => 0
+            [PLANES_COUNT] => 0
+            [SHIPS_COUNT] => 0
+            [TRAIN_STATIONS_COUNT] => 0
+            [LORRY_STATIONS_COUNT] => 0
+            [BUSS_STOPS_COUNT] => 0
+            [AIRPORTS_COUNT] => 0
+            [HARBOURS_COUNT] => 0
+        )
+
+    [1] => Array
+        (
+            [COMPANY_ID] => 1
+            [TRAINS_COUNT] => 19
+            [LORRIES_COUNT] => 20
+            [BUSSES_COUNT] => 16
+            [PLANES_COUNT] => 4
+            [SHIPS_COUNT] => 7
+            [TRAIN_STATIONS_COUNT] => 17
+            [LORRY_STATIONS_COUNT] => 16
+            [BUSS_STOPS_COUNT] => 20
+            [AIRPORTS_COUNT] => 3
+            [HARBOURS_COUNT] => 8
+        )
+
+)
+
+
