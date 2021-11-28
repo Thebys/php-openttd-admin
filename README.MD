@@ -17,7 +17,7 @@ See [OttdAdmin.php](OttdAdmin.php), better documentation will be added in future
 2. Have admin password set
     - `setting admin_password "YOURPASSWORD"`
 3. If you are just enabled network administration restart OpenTTD server
-4. In php, sockets module must be enabled
+4. In php, **sockets module** must be enabled, php version **7.2+** (recommended 64bit)
 5. Save **Example.php** and **OttdAdmin.php** to same folder...
    - Edit hostname/ip, port and password
    - In cli run `php Example.php` or in your browser navigare to your `Example.php`
