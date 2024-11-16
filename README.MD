@@ -1,9 +1,9 @@
 # PHP OpenTTD Stats
 
-> Verison 0.3.1
+> Verison 0.3.2
 
 ## About repository
-Basedon PHP OpenTTD Admin. 
+Basedon PHP OpenTTD Admin. Watch companies competing in OpenTTD via web dashboard via OpenTTD admin port.
 
 ## Prequisites:
 1. Have enabled admin port
@@ -14,6 +14,8 @@ Basedon PHP OpenTTD Admin.
     - `setting admin_password "YOURPASSWORD"`
 3. If you are just enabled network administration restart OpenTTD server
 4. In php, **sockets module** must be enabled, php version **7.2+** (recommended 64bit)
+5. Composer must be installed, use it to install dependencies (sqlite3, illuminate/database)
+6. Also your PHP server needs to have sqlite3 and pdo_sqlite extensions enabled
 
 ## Installation
 1. Copy config.example.php to config.php and edit it to your needs.
