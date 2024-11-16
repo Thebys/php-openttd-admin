@@ -76,5 +76,6 @@ foreach ($config['servers'] as $server) {
         );
     }
 
-    echo "Data fetching completed successfully for {$serverName}!\n";
+    //echo json ok
+    echo json_encode(['status' => 'ok']);
 }
