@@ -5,6 +5,8 @@
 ## About repository
 Basedon PHP OpenTTD Admin. Watch companies competing in OpenTTD via web dashboard via OpenTTD admin port.
 
+![screenshot](https://i.imgur.com/Mki3zjJ.png)
+
 ## Prequisites:
 1. Have enabled admin port
     - In openttd server console: (or in settings set)
