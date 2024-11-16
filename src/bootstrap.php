@@ -1,6 +1,6 @@
 <?php
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 $config = require 'config.php';
 use Illuminate\Database\Capsule\Manager as Capsule;
 
