@@ -1,6 +1,6 @@
 # PHP OpenTTD Stats
 
-> Verison 0.2.1
+> Verison 0.3.1
 
 ## About repository
 Basedon PHP OpenTTD Admin. 
@@ -18,4 +18,4 @@ Basedon PHP OpenTTD Admin.
 ## Installation
 1. Copy config.example.php to config.php and edit it to your needs.
 2. Run install.php to create the database.
-3. ... TBD ...
+3. Visit index.php in your browser, click start fetching and enjoy!
