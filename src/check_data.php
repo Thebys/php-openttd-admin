@@ -15,7 +15,7 @@ foreach ($servers as $server) {
 
 echo "<br/><br/>Company Info:<br/>";
 foreach ($companies as $company) {
-    echo "Server ID: {$company->server_id}, Company ID: {$company->company_id}, Name: {$company->company_name}, Manager: {$company->manager}<br/>";
+    echo "Server ID: {$company->server_id}, Company ID: {$company->company_id}, Name: {$company->company_name}, Manager: {$company->manager}, Color: {$company->color}<br/>";
 }
 
 echo "<br/><br/>Company Stats:<br/>";

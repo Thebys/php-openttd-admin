@@ -44,8 +44,10 @@ foreach ($config['servers'] as $server) {
 
     foreach ($companyInfo as $company) {
         // Fetch company stats and economy and insert new row.
-        $companyEconomy = $admin->getCompanyEconomy($company['COMPANY_ID']);
-        $companyStats = $admin->getCompanyStats($company['COMPANY_ID']);
+        $allCompanyEconomy = $admin->getCompanyEconomy();
+        $allCompanyStats = $admin->getCompanyStats();
+        $companyEconomy = $allCompanyEconomy[$company['COMPANY_ID']];
+        $companyStats = $allCompanyStats[$company['COMPANY_ID']];
         Capsule::table('company_stats')->insert(
             [
                 'server_id' => $server['id'],
