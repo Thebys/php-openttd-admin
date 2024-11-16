@@ -1,6 +1,7 @@
 <?php
 
-class OttdAdmin{
+class OttdAdmin
+{
 
     const USER_NAME_DEFAULT = "PHP OttdAdmin";
     const VERSION = '0.1.0';
@@ -14,37 +15,39 @@ class OttdAdmin{
     const ADMIN_PACKET_ADMIN_RCON = 5;
     const ADMIN_PACKET_ADMIN_GAMESCRIPT = 6;
     const ADMIN_PACKET_ADMIN_PING = 7;
+    const ADMIN_PACKET_ADMIN_EXTERNAL_CHAT = 8;
 
-    const ADMIN_PACKET_SERVER_FULL = 100;             
-    const ADMIN_PACKET_SERVER_BANNED = 101;           
-    const ADMIN_PACKET_SERVER_ERROR = 102;            
-    const ADMIN_PACKET_SERVER_PROTOCOL = 103;         
-    const ADMIN_PACKET_SERVER_WELCOME = 104;          
-    const ADMIN_PACKET_SERVER_NEWGAME = 105;          
-    const ADMIN_PACKET_SERVER_SHUTDOWN = 106;         
-    const ADMIN_PACKET_SERVER_DATE = 107;             
+    const ADMIN_PACKET_SERVER_FULL = 100;
+    const ADMIN_PACKET_SERVER_BANNED = 101;
+    const ADMIN_PACKET_SERVER_ERROR = 102;
+    const ADMIN_PACKET_SERVER_PROTOCOL = 103;
+    const ADMIN_PACKET_SERVER_WELCOME = 104;
+    const ADMIN_PACKET_SERVER_NEWGAME = 105;
+    const ADMIN_PACKET_SERVER_SHUTDOWN = 106;
+    const ADMIN_PACKET_SERVER_DATE = 107;
 
-    const ADMIN_PACKET_SERVER_CLIENT_JOIN = 108;       
-    const ADMIN_PACKET_SERVER_CLIENT_INFO = 109;       
-    const ADMIN_PACKET_SERVER_CLIENT_UPDATE = 110;     
-    const ADMIN_PACKET_SERVER_CLIENT_QUIT = 111;       
-    const ADMIN_PACKET_SERVER_CLIENT_ERROR = 112;      
+    const ADMIN_PACKET_SERVER_CLIENT_JOIN = 108;
+    const ADMIN_PACKET_SERVER_CLIENT_INFO = 109;
+    const ADMIN_PACKET_SERVER_CLIENT_UPDATE = 110;
+    const ADMIN_PACKET_SERVER_CLIENT_QUIT = 111;
+    const ADMIN_PACKET_SERVER_CLIENT_ERROR = 112;
 
-    const ADMIN_PACKET_SERVER_COMPANY_NEW = 113;       
-    const ADMIN_PACKET_SERVER_COMPANY_INFO = 114;      
-    const ADMIN_PACKET_SERVER_COMPANY_UPDATE = 115;    
-    const ADMIN_PACKET_SERVER_COMPANY_REMOVE = 116;    
-    const ADMIN_PACKET_SERVER_COMPANY_ECONOMY = 117;   
-    const ADMIN_PACKET_SERVER_COMPANY_STATS = 118;     
+    const ADMIN_PACKET_SERVER_COMPANY_NEW = 113;
+    const ADMIN_PACKET_SERVER_COMPANY_INFO = 114;
+    const ADMIN_PACKET_SERVER_COMPANY_UPDATE = 115;
+    const ADMIN_PACKET_SERVER_COMPANY_REMOVE = 116;
+    const ADMIN_PACKET_SERVER_COMPANY_ECONOMY = 117;
+    const ADMIN_PACKET_SERVER_COMPANY_STATS = 118;
 
-    const ADMIN_PACKET_SERVER_CHAT = 119;              
-    const ADMIN_PACKET_SERVER_RCON = 120;              
-    const ADMIN_PACKET_SERVER_CONSOLE = 121;           
-    const ADMIN_PACKET_SERVER_CMD_NAMES = 122;         
-    const ADMIN_PACKET_SERVER_CMD_LOGGING = 123;       
-    const ADMIN_PACKET_SERVER_GAMESCRIPT = 124;        
-    const ADMIN_PACKET_SERVER_RCON_END = 125;          
-    const ADMIN_PACKET_SERVER_PONG = 126;              
+    const ADMIN_PACKET_SERVER_CHAT = 119;
+
+    const ADMIN_PACKET_SERVER_RCON = 120;
+    const ADMIN_PACKET_SERVER_CONSOLE = 121;
+    const ADMIN_PACKET_SERVER_CMD_NAMES = 122;
+    const ADMIN_PACKET_SERVER_CMD_LOGGING = 123;
+    const ADMIN_PACKET_SERVER_GAMESCRIPT = 124;
+    const ADMIN_PACKET_SERVER_RCON_END = 125;
+    const ADMIN_PACKET_SERVER_PONG = 126;
 
     const INVALID_ADMIN_PACKET = 255;
 
@@ -68,7 +71,8 @@ class OttdAdmin{
     private $sock;
     private $server  = [];
 
-    public function __construct($ip = "127.0.0.1", $port = 3977, $password = null) {
+    public function __construct($ip = "127.0.0.1", $port = 3977, $password = null)
+    {
         $this->password = $password;
         $this->ip = $ip;
         $this->port = $port;
@@ -89,17 +93,18 @@ class OttdAdmin{
      * @param int $port Admin port (optional if is set in constructor)
      * @return bool Connection was successfull
      */
-    public function connect($ip = null, $port = null) {
-        if(is_null($ip))
+    public function connect($ip = null, $port = null)
+    {
+        if (is_null($ip))
             $ip = $this->ip;
-        if(is_null($port))
+        if (is_null($port))
             $port = $this->port;
 
         $this->server = [];
 
-        $this->sock = socket_create(AF_INET, SOCK_STREAM ,SOL_TCP);
+        $this->sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         $connected = socket_connect($this->sock, $ip, $port);
-        if(!$connected) return false;
+        if (!$connected) return false;
         socket_set_nonblock($this->sock);
         return true;
     }
@@ -112,16 +117,17 @@ class OttdAdmin{
      * @internal
      * @return string display-able string
      */
-    private function debug_datarender($str){
+    private function debug_datarender($str)
+    {
         $r = "";
         foreach (str_split($str) as $sym) {
-            if(ord($sym) > 122 || ord($sym) < 32){
-                if(ord($sym) == 0){
+            if (ord($sym) > 122 || ord($sym) < 32) {
+                if (ord($sym) == 0) {
                     $r .= "~";
-                }else{
-                    $r .= "{".(ord($sym))."}";
+                } else {
+                    $r .= "{" . (ord($sym)) . "}";
                 }
-            }else{
+            } else {
                 $r .= $sym;
             }
         }
@@ -148,14 +154,14 @@ class OttdAdmin{
             'int64'  => 'q', //Warning !!! Php machine must use same byte order as OpenTTD server!
             'string' => 'T',
         ];
-        if(strlen($type) > 1){
-            if(array_key_exists(strtolower($type), $readableTypes)){
+        if (strlen($type) > 1) {
+            if (array_key_exists(strtolower($type), $readableTypes)) {
                 $type = $readableTypes[strtolower($type)];
-            }else{
+            } else {
                 throw new Exception("Unknown pack type: $type", 640);
             }
         }
-        if($bool_as_char && $type == 'B')
+        if ($bool_as_char && $type == 'B')
             return 'C';
         return $type;
     }
@@ -169,18 +175,18 @@ class OttdAdmin{
     private function sendAsPacket(int $packetMode, array $data)
     {
         $packet = chr($packetMode);
-        foreach($data as $item){
+        foreach ($data as $item) {
             $part = '';
-            if(is_array($item)){
+            if (is_array($item)) {
                 $part = pack($this->packTypeHelper($item[0], true), $item[1]);
-            }elseif(is_int($item)){
+            } elseif (is_int($item)) {
                 $part .= chr($item);
-            }elseif(is_string($item)){
-                $part = $item.chr(0);
+            } elseif (is_string($item)) {
+                $part = $item . chr(0);
             }
             $packet .= $part;
         }
-        $packet = chr(strlen($packet)+2).chr(0).$packet;
+        $packet = chr(strlen($packet) + 2) . chr(0) . $packet;
         $sent = socket_write($this->sock, $packet, strlen($packet));
         //echo $sent."B >> ".$this->debug_datarender($packet)."\n";
         return $sent;
@@ -198,13 +204,13 @@ class OttdAdmin{
      */
     private function awaitPacket($packetMode = null, int $sleepMicrotime = null, int $limitMicrotime = 0)
     {
-        if(is_null($sleepMicrotime))
+        if (is_null($sleepMicrotime))
             $sleepMicrotime = self::RECIVE_LOOP_TIMING;
 
-        $start = microtime(true); 
-        while(!($len = socket_read($this->sock, 2))){
+        $start = microtime(true);
+        while (!($len = socket_read($this->sock, 2))) {
             usleep(max(1, $sleepMicrotime) * 1000);
-            if($limitMicrotime > 0  && microtime(true) > $start+(0.001*$limitMicrotime)){
+            if ($limitMicrotime > 0  && microtime(true) > $start + (0.001 * $limitMicrotime)) {
                 //Wait timeout exceeded
                 return null;
             }
@@ -213,26 +219,26 @@ class OttdAdmin{
         $read = unpack('v', $len);
         $read = $read[1];
         //echo "To read: $read\n";
-        $raw = socket_read($this->sock, $read-2);
+        $raw = socket_read($this->sock, $read - 2);
         //$rawResponse = ($read+2)."B << ".$this->debug_datarender($len.$raw)."\n";
         $recivedMode = ord($raw[0]);
 
-        if(!is_null($packetMode) && $recivedMode == $packetMode){
-            return substr($raw,1);
-        }elseif(is_array($packetMode) && in_array($recivedMode, $packetMode)){
+        if (!is_null($packetMode) && $recivedMode == $packetMode) {
+            return substr($raw, 1);
+        } elseif (is_array($packetMode) && in_array($recivedMode, $packetMode)) {
             return (object) [
                 "mode" => $recivedMode,
-                "data" => substr($raw,1)
+                "data" => substr($raw, 1)
             ];
-        }else{
-            $this->onRecive($recivedMode, substr($raw,1));
-            if(is_null($packetMode)){
+        } else {
+            $this->onRecive($recivedMode, substr($raw, 1));
+            if (is_null($packetMode)) {
                 return (object) [
                     "mode" => $recivedMode,
-                    "data" => substr($raw,1)
+                    "data" => substr($raw, 1)
                 ];
             }
-            return $this->awaitPacket($packetMode, $sleepMicrotime, max(1, $start+(0.001*$limitMicrotime) - microtime(true)));
+            return $this->awaitPacket($packetMode, $sleepMicrotime, max(1, $start + (0.001 * $limitMicrotime) - microtime(true)));
         }
     }
 
@@ -255,20 +261,20 @@ class OttdAdmin{
         ];
         foreach ($format as $name => $type) {
             $type = $this->packTypeHelper($type);
-            if($type == 'T'){
+            if ($type == 'T') {
                 $text = "";
                 $i = 0;
-                while($data[$i] != chr(0)){
+                while ($data[$i] != chr(0)) {
                     $text .= $data[$i];
                     ++$i;
                 }
                 $result[$name] = $text;
-                $data = substr($data, $i+1);
-            }elseif($type == 'B'){
+                $data = substr($data, $i + 1);
+            } elseif ($type == 'B') {
                 $value = unpack('C', $data);
                 $data = substr($data, 1);
                 $result[$name] = boolval($value[1]);
-            }else{
+            } else {
                 $value = unpack($type, $data);
                 $data = substr($data, $sizes[$type]);
                 $result[$name] = $value[1];
@@ -286,24 +292,24 @@ class OttdAdmin{
      */
     public function join($password = null, $name = null)
     {
-        if(is_null($password))
+        if (is_null($password))
             $password = $this->password;
-        if(is_null($name))
+        if (is_null($name))
             $name = self::USER_NAME_DEFAULT;
 
-        $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_JOIN,[
-            $password,    
-            $name,        
+        $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_JOIN, [
+            $password,
+            $name,
             self::VERSION
         ]);
-    
+
         $data = $this->awaitPacket(self::ADMIN_PACKET_SERVER_PROTOCOL);
         $temp = unpack('Ca/Cb', $data);
         $data = substr($data, 2);
         $serverInfo = ["NETWORK_GAME_ADMIN_VERSION" => $temp['a'], "ADMIN_UPDATE" => []];
         $updates = boolval($temp['b']);
 
-        while($updates){
+        while ($updates) {
             $temp = unpack('va/vb/Cc', $data);
             $bitset = [
                 'ADMIN_FREQUENCY_POLL'      => boolval($temp['b'] & 0x01),
@@ -317,7 +323,7 @@ class OttdAdmin{
 
             $serverInfo["ADMIN_UPDATE"][self::ADMIN_REQESTS[$temp['a']]] = $bitset;
             $updates = boolval($temp['c']);
-            if($updates)
+            if ($updates)
                 $data = substr($data, 5);
         }
 
@@ -336,7 +342,7 @@ class OttdAdmin{
             'MAP_Y'          => 'uint16',
         ];
         $this->server = array_merge($this->server, $this->unpackPro($data, $format));
-        
+
         return $this->server;
     }
 
@@ -377,12 +383,12 @@ class OttdAdmin{
             126 => 'ADMIN_PACKET_SERVER_PONG',
             255 => 'INVALID_ADMIN_PACKET',
         ];
-        if(array_key_exists($event, $recivableEvents)){
-            echo "Recived message: '".$recivableEvents[$event]."'...\n";
-        }else{
-            echo "Recived message: UNKNOWN=".$event." ...\n";
+        if (array_key_exists($event, $recivableEvents)) {
+            echo "Recived message: '" . $recivableEvents[$event] . "'...\n";
+        } else {
+            echo "Recived message: UNKNOWN=" . $event . " ...\n";
         }
-        echo "<< ".$this->debug_datarender($data)."\n";
+        echo "<< " . $this->debug_datarender($data) . "\n";
     }
 
     /**
@@ -411,16 +417,16 @@ class OttdAdmin{
     protected function poll(string $command, int $param = 0xFFFFFFFF)
     {
         $command = strtoupper($command);
-        if(!in_array($command, self::ADMIN_REQESTS)){
+        if (!in_array($command, self::ADMIN_REQESTS)) {
             throw new Exception("Unknown request!", 54);
         }
-        if(!$this->server["ADMIN_UPDATE"][$command]["ADMIN_FREQUENCY_POLL"]){
+        if (!$this->server["ADMIN_UPDATE"][$command]["ADMIN_FREQUENCY_POLL"]) {
             throw new Exception("Unable to poll '$command' manualy!", 55);
         }
         $cmdId = array_search($command, self::ADMIN_REQESTS);
         return $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_POLL, [
-            $cmdId,    
-            ['V',$param]
+            $cmdId,
+            ['V', $param]
         ]);
     }
 
@@ -432,7 +438,7 @@ class OttdAdmin{
     {
         $this->poll('ADMIN_UPDATE_DATE');
         $response = $this->awaitPacket(self::ADMIN_PACKET_SERVER_DATE);
-        $response = $this->unpackPro($response, ["date"=>"uint32"] /*["M"=>"C","D"=>"C","Y"=>"v"]*/);
+        $response = $this->unpackPro($response, ["date" => "uint32"] /*["M"=>"C","D"=>"C","Y"=>"v"]*/);
         //727337 = 1991-05-20
         //727397 = 1991-07-15
         //727398 = 1991-07-20 
@@ -450,16 +456,16 @@ class OttdAdmin{
         $this->poll('ADMIN_UPDATE_CLIENT_INFO', $clientId);
         $clients = [];
         $response = $this->awaitPacket(self::ADMIN_PACKET_SERVER_CLIENT_INFO, self::RECIVE_LOOP_TIMING, 500);
-        while(!is_null($response)){
+        while (!is_null($response)) {
             $response = $this->unpackPro($response, [
                 "CLIENT_ID" =>      "uint32",
-                "CLIENT_HOSTNAME"=> "string",
+                "CLIENT_HOSTNAME" => "string",
                 "CLIENT_NAME" =>    "string",
                 "CLIENT_LANG" =>    "uint8",
                 "JOIN_DATE" =>      "uint32",
                 "PLAY_AS"   =>      "uint8",
             ]);
-            if($clientId != 0xFFFFFFFF){
+            if ($clientId != 0xFFFFFFFF) {
                 return $response;
             }
             $clients[] = $response;
@@ -478,7 +484,7 @@ class OttdAdmin{
         $this->poll('ADMIN_UPDATE_COMPANY_INFO', $companyId);
         $companies = [];
         $response = $this->awaitPacket(self::ADMIN_PACKET_SERVER_COMPANY_INFO, self::RECIVE_LOOP_TIMING, 500);
-        while(!is_null($response)){
+        while (!is_null($response)) {
             $response = $this->unpackPro($response, [
                 "COMPANY_ID"    => 'uint8',   // ID of the company.
                 "COMPANY_NAME"  => 'string',  // Name of the company.
@@ -488,7 +494,7 @@ class OttdAdmin{
                 "START_DATE"    => 'uint32',  // Year the company was inaugurated.
                 "IS_AI"         => 'bool',    // Company is an AI.
             ]);
-            if($companyId != 0xFFFFFFFF){
+            if ($companyId != 0xFFFFFFFF) {
                 return $response;
             }
             $companies[] = $response;
@@ -507,21 +513,21 @@ class OttdAdmin{
         $this->poll('ADMIN_UPDATE_COMPANY_ECONOMY', $companyId);
         $companies = [];
         $response = $this->awaitPacket(self::ADMIN_PACKET_SERVER_COMPANY_ECONOMY, self::RECIVE_LOOP_TIMING, 500);
-        while(!is_null($response)){
+        while (!is_null($response)) {
             $response = $this->unpackPro($response, [
-                "COMPANY_ID"    =>'uint8',   //ID of the company.
-                "MONEY"         =>'uint64',  //Money.
-                "LOAN"          =>'uint64',  //Loan.
-                "INCOME"        =>'int64',   //Income.
-                "DELIVER_THISQ" =>'uint16',  //Delivered cargo (this quarter).
-                "VALUE_LASTQ"   =>'uint64',  //Company value (last quarter).
-                "PERF_LASTQ"    =>'uint16',  //Performance (last quarter).
-                "DELIVER_LASTQ" =>'uint16',  //Delivered cargo (last quarter).
-                "VALUE_PREVQ"   =>'uint64',  //Company value (previous quarter).
-                "PERF_PREVQ"    =>'uint16',  //Performance (previous quarter).
-                "DELIVER_PREVQ" =>'uint16',  //Delivered cargo (previous quarter).
+                "COMPANY_ID"    => 'uint8',   //ID of the company.
+                "MONEY"         => 'uint64',  //Money.
+                "LOAN"          => 'uint64',  //Loan.
+                "INCOME"        => 'int64',   //Income.
+                "DELIVER_THISQ" => 'uint16',  //Delivered cargo (this quarter).
+                "VALUE_LASTQ"   => 'uint64',  //Company value (last quarter).
+                "PERF_LASTQ"    => 'uint16',  //Performance (last quarter).
+                "DELIVER_LASTQ" => 'uint16',  //Delivered cargo (last quarter).
+                "VALUE_PREVQ"   => 'uint64',  //Company value (previous quarter).
+                "PERF_PREVQ"    => 'uint16',  //Performance (previous quarter).
+                "DELIVER_PREVQ" => 'uint16',  //Delivered cargo (previous quarter).
             ]);
-            if($companyId != 0xFFFFFFFF){
+            if ($companyId != 0xFFFFFFFF) {
                 return $response;
             }
             $companies[] = $response;
@@ -540,9 +546,9 @@ class OttdAdmin{
         $this->poll('ADMIN_UPDATE_COMPANY_STATS', $companyId);
         $companies = [];
         $response = $this->awaitPacket(self::ADMIN_PACKET_SERVER_COMPANY_STATS, self::RECIVE_LOOP_TIMING, 500);
-        while(!is_null($response)){
+        while (!is_null($response)) {
             $response = $this->unpackPro($response, [
-                "COMPANY_ID"           =>'uint8',    //ID of the company.
+                "COMPANY_ID"           => 'uint8',    //ID of the company.
                 "TRAINS_COUNT"         => 'uint16',  //Number of trains.
                 "LORRIES_COUNT"        => 'uint16',  //Number of lorries.
                 "BUSSES_COUNT"         => 'uint16',  //Number of busses.
@@ -554,14 +560,13 @@ class OttdAdmin{
                 "AIRPORTS_COUNT"       => 'uint16',  //Number of airports and heliports.
                 "HARBOURS_COUNT"       => 'uint16',  //Number of harbours.
             ]);
-            if($companyId != 0xFFFFFFFF){
+            if ($companyId != 0xFFFFFFFF) {
                 return $response;
             }
             $companies[] = $response;
             $response = $this->awaitPacket(self::ADMIN_PACKET_SERVER_COMPANY_STATS, self::RECIVE_LOOP_TIMING, 500);
         }
         return $companies;
-
     }
 
     /**
@@ -569,21 +574,20 @@ class OttdAdmin{
      * @param int cmdlet id (0xFFFFFFFF for all)
      * @return array (array of - if all queried) numeric - id based - array with cmdlets
      */
-    public function getCmdNames(Type $var = null)
+    public function getCmdNames(int $cmdId = 0xFFFFFFFF)
     {
-        $this->poll('ADMIN_UPDATE_CMD_NAMES');
+        $this->poll('ADMIN_UPDATE_CMD_NAMES', $cmdId);
         $cmds = [];
         $response = $this->awaitPacket(self::ADMIN_PACKET_SERVER_CMD_NAMES, self::RECIVE_LOOP_TIMING, 500);
-        while(!is_null($response) && strlen($response)){
-            while(ord($response[0])){
-                $response = substr($response,1);
+        while (!is_null($response) && strlen($response)) {
+            while (ord($response[0])) {
+                $response = substr($response, 1);
                 $tmp = $this->unpackPro($response, [
-                        "cmdid"=>"uint16",
-                        'command'=>"string"
-                    ], $cut);
+                    "cmdid" => "uint16",
+                    'command' => "string"
+                ], $cut);
                 $response = $cut;
                 $cmds[$tmp["cmdid"]] = $tmp["command"];
-
             }
             $response = $this->awaitPacket(self::ADMIN_PACKET_SERVER_CMD_NAMES, self::RECIVE_LOOP_TIMING, 500);
         }
@@ -598,30 +602,73 @@ class OttdAdmin{
      */
     public function console(string $command, bool $simpleOutput = true)
     {
-        $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_RCON, [
-            $command,
-        ]);
+        echo "Sending RCON command: $command\n";
+        $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_RCON, [$command]);
+
         $output = [];
-        while(1){
-            $response = $this->awaitPacket([self::ADMIN_PACKET_SERVER_RCON,self::ADMIN_PACKET_SERVER_RCON_END]);
-            if($response->mode == self::ADMIN_PACKET_SERVER_RCON){
-                $output[] = $this->unpackPro($response->data, [
-                    "COLOR"=>"uint16",
-                    "TEXT"=>"string"
-                ]);
-            }elseif($response->mode == self::ADMIN_PACKET_SERVER_RCON_END){
-                $output[] = $this->unpackPro($response->data, [
-                    "COMMAND"=>"string"
-                ]);
+        while (1) {
+            $response = $this->awaitPacket([self::ADMIN_PACKET_SERVER_RCON, self::ADMIN_PACKET_SERVER_RCON_END]);
+
+            if ($response === null) {
+                echo "No response received. Exiting loop.\n";
                 break;
-            }else{
-                throw new Exception("Program error", 990);
+            }
+
+            echo "Received response packet: " . $response->mode . "\n";
+
+            if ($response->mode == self::ADMIN_PACKET_SERVER_RCON) {
+                $unpacked = $this->unpackPro($response->data, [
+                    "COLOR" => "uint16",
+                    "TEXT" => "string"
+                ]);
+                $output[] = $unpacked;
+                echo "RCON Output: " . $unpacked['TEXT'] . "\n";
+            } elseif ($response->mode == self::ADMIN_PACKET_SERVER_RCON_END) {
+                $unpacked = $this->unpackPro($response->data, [
+                    "COMMAND" => "string"
+                ]);
+                $output[] = $unpacked;
+                echo "RCON Command End: " . $unpacked['COMMAND'] . "\n";
+                break;
+            } else {
+                throw new Exception("Unexpected packet received: " . $response->mode, 990);
             }
         }
-        if($simpleOutput){
-            return join("\n",array_column($output, "TEXT"));
+
+        if ($simpleOutput) {
+            return join("\n", array_column($output, "TEXT"));
         }
         return $output;
     }
+    public function sendChat($message, $action = 'NETWORK_ACTION_CHAT_SERVER', $destination = 'DESTTYPE_BROADCAST', $id = 0)
+    {
+        $actions = [
+            'NETWORK_ACTION_CHAT_CLIENT' => 0,
+            'NETWORK_ACTION_CHAT_COMPANY' => 1,
+            'NETWORK_ACTION_CHAT_SERVER' => 2,
+        ];
 
+        $destinations = [
+            'DESTTYPE_BROADCAST' => 0,
+            'DESTTYPE_CLIENT' => 1,
+            'DESTTYPE_COMPANY' => 2,
+        ];
+
+        $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_CHAT, [
+            ['uint8', $actions[$action]],
+            ['uint8', $destinations[$destination]],
+            ['uint32', $id], // ID of the client or company (0 for broadcast)
+            $message,
+        ]);
+    }
+    public function sendExternalChat($sourceName, $userName, $message, $color = 12)
+    {
+        // White is 12
+        $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_EXTERNAL_CHAT, [
+            $sourceName,
+            ['uint16', $color],
+            $userName,
+            $message,
+        ]);
+    }
 }
