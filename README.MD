@@ -1,13 +1,9 @@
-# PHP OpenTTD Admin
+# PHP OpenTTD Stats
 
-> Verison 0.1.0
+> Verison 0.2.1
 
 ## About repository
-This script is in some early phase now, it can run some commands on demand, but my target is to make this `class OttdAdmin` a universal PHP controller - which can be extended to further processing requests (OpenTTD game events), and to be able to run as daemon service or on demand.
-For example from web request...
-
-## Documentation
-See [OttdAdmin.php](OttdAdmin.php), better documentation will be added in future :)
+Basedon PHP OpenTTD Admin. 
 
 ## Prequisites:
 1. Have enabled admin port
@@ -18,13 +14,8 @@ See [OttdAdmin.php](OttdAdmin.php), better documentation will be added in future
     - `setting admin_password "YOURPASSWORD"`
 3. If you are just enabled network administration restart OpenTTD server
 4. In php, **sockets module** must be enabled, php version **7.2+** (recommended 64bit)
-5. Save **Example.php** and **OttdAdmin.php** to same folder...
-   - Edit hostname/ip, port and password
-   - In cli run `php Example.php` or in your browser navigare to your `Example.php`
-   - You should get response like [HERE](example-output.txt)
 
-
------
-> Feel free to discuss, open issue and fork this repository  
-> @TooMeeNoo 2021
-
+## Installation
+1. Copy config.example.php to config.php and edit it to your needs.
+2. Run install.php to create the database.
+3. ... TBD ...

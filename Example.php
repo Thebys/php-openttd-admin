@@ -1,6 +1,9 @@
 <?php
+require 'vendor/autoload.php';
+use Thebys\PhpOpenttdStats\OttdAdmin;
+
 header('Content-Type: text/plain');
-require_once "OttdAdmin.php";
+
 function convertToGameDate($openttdDate)
 {
     // OpenTTD epoch starts on January 1, 1920
@@ -21,7 +24,7 @@ function convertToGameDate($openttdDate)
 
 
 echo "Create: (OK)\n";
-$admin = new OttdAdmin('openttd.iver.cz', 3989, 'CHANGEME');
+$admin = new OttdAdmin('openttd.iver.cz', 3989, 'OPENTTDADMINPWD');
 
 // Connect to the server
 echo "Connect: \n";
@@ -54,10 +57,11 @@ $yearsInGame = $currentYear - $startYear;
 echo "Game Start Year: $startYear\n";
 echo "Current Year: $currentYear\n";
 echo "Years in Game: $yearsInGame\n\n";
+
 $admin->sendExternalChat("PHP", "Admin", "PHP Script polling game data.");
-for ($i = 0; $i < 15; $i++) {
+/*for ($i = 0; $i < 17; $i++) {
     $admin->sendExternalChat("PHP", "Admin", "Colored message - " . $i, $i); // Sends a red message
-}
+}*/
 
 // Get the list of players
 echo "Get Client Info: \n";

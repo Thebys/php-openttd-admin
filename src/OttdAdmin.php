@@ -1,5 +1,7 @@
 <?php
 
+namespace Thebys\PhpOpenttdStats;
+
 class OttdAdmin
 {
 
@@ -670,5 +672,33 @@ class OttdAdmin
             $userName,
             $message,
         ]);
+    }
+    public function sendCustomNews($message = "Breaking News: Custom message from PHP Admin API!", $companyId = 0xFF, $reference = 0)
+    {
+        $cmdId = 85;  // Index of CmdCustomNewsItem
+        $flags = 0x3; // Flags: DC_EXEC | DC_ALLOW
+        $newsType = 0;  // NT_GENERAL
+        $refType = 0;   // NRT_NONE
+        $companyId = 0xFF; // For all players
+        $reference = 0; // No specific reference
+        
+        // Prepare the data packet for DoCommand
+        $commandData = [
+            ['uint16', $cmdId],
+            ['uint16', $flags],
+            ['uint8', $newsType],
+            ['uint8', $refType],
+            ['uint8', $companyId],
+            ['uint32', $reference],
+            ['string', $message]
+        ];
+        
+        // Send the packet as a GameScript command
+        $response = $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_GAMESCRIPT, $commandData);
+        
+        // Output the response
+        echo "Response: ";
+        print_r($response);
+        
     }
 }

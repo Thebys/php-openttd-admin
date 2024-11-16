@@ -1,0 +1,19 @@
+{
+    "name": "thebys/php-openttd-stats",
+    "description": "Uses the admin port of OpenTTD game servers to observe games and provide a web dashboard.",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Thebys\\PhpOpenttdStats\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tomáš \"Thebys\" Biheler",
+            "email": "tomas.biheler@impacthub.cz"
+        }
+    ],
+    "require": {
+        "illuminate/database": "^11.32"
+    }
+}
