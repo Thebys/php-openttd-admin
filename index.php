@@ -46,9 +46,9 @@
     <div class="container my-5">
         <h1 class="text-center mb-4">🚂 OpenTTD Server Dashboard 🚉</h1>
         <button id="toggle-fetching" class="btn btn-primary mb-4" onclick="toggleFetching()">Start Fetching</button>
-        <div id="server-info" class="mb-5"></div>
         <h2>Leaderboard</h2>
         <div id="leaderboard" class="mb-5"></div>
+        <div id="server-info" class="mb-5"></div>        
         <h2>Company Stats</h2>
         <canvas id="company-stats-chart" height="100"></canvas>
     </div>

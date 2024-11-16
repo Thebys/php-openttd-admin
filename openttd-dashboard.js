@@ -3,7 +3,9 @@ async function fetchData(url) {
     return await response.json();
 }
 
-let selectedTimeScope = '2h'; // Default time scope
+let selectedTimeScope = '1h'; // Default time scope
+let selectedMetrics = ['money', 'income', 'loan']; // Default selected metrics
+let selectedCompanies = []; // Default to all companies
 
 const timeScopes = {
     '1m': moment.duration(1, 'minutes').asMilliseconds(),
@@ -18,6 +20,26 @@ const timeScopes = {
 
 window.setTimeScope = function(scope) {
     selectedTimeScope = scope;
+    updateDashboard();
+};
+
+window.toggleMetric = function(metric) {
+    const index = selectedMetrics.indexOf(metric);
+    if (index > -1) {
+        selectedMetrics.splice(index, 1);
+    } else {
+        selectedMetrics.push(metric);
+    }
+    updateDashboard();
+};
+
+window.toggleCompany = function(companyId) {
+    const index = selectedCompanies.indexOf(companyId);
+    if (index > -1) {
+        selectedCompanies.splice(index, 1);
+    } else {
+        selectedCompanies.push(companyId);
+    }
     updateDashboard();
 };
 
@@ -51,8 +73,77 @@ async function updateDashboard() {
         serverInfoDiv.parentNode.insertBefore(timeScopeDiv, serverInfoDiv.nextSibling);
     }
 
+    // Add Metrics Selection UI
+    let metricsDiv = document.getElementById('metrics-selection');
+    if (!metricsDiv) {
+        const allMetrics = [
+            'money',
+            'income',
+            'loan',
+            'value_lastq',
+            'value_prevq',
+            'perf_lastq',
+            'perf_prevq',
+            'deliver_lastq',
+            'deliver_prevq',
+            'trains_count',
+            'lorries_count',
+            'busses_count',
+            'planes_count',
+            'ships_count',
+            'train_stations_count',
+            'lorry_stations_count',
+            'bus_stops_count',
+            'airports_count',
+            'harbours_count',
+        ];
+        metricsDiv = document.createElement('div');
+        metricsDiv.id = 'metrics-selection';
+        metricsDiv.classList.add('mb-4');
+        metricsDiv.innerHTML = `
+            <label>Select Metrics: </label>
+            ${allMetrics
+                .map(
+                    (metric) => `
+                <label class="form-check-label m-1">
+                    <input type="checkbox" class="form-check-input" onchange="toggleMetric('${metric}')" ${
+                        selectedMetrics.includes(metric) ? 'checked' : ''
+                    }>
+                    ${metric}
+                </label>
+            `
+                )
+                .join('')}
+        `;
+        timeScopeDiv.parentNode.insertBefore(metricsDiv, timeScopeDiv.nextSibling);
+    }
+
+    // Add Company Selection UI
+    let companyDiv = document.getElementById('company-selection');
+    if (!companyDiv) {
+        companyDiv = document.createElement('div');
+        companyDiv.id = 'company-selection';
+        companyDiv.classList.add('mb-4');
+        companyDiv.innerHTML = `
+            <label>Select Companies: </label>
+            ${companies
+                .map(
+                    (company) => `
+                <label class="form-check-label m-1">
+                    <input type="checkbox" class="form-check-input" onchange="toggleCompany('${company.company_id}')" ${
+                        selectedCompanies.length === 0 || selectedCompanies.includes(company.company_id.toString()) ? 'checked' : ''
+                    }>
+                    ${company.company_name}
+                </label>
+            `
+                )
+                .join('')}
+        `;
+        metricsDiv.parentNode.insertBefore(companyDiv, metricsDiv.nextSibling);
+    }
+
     // Filter stats based on selectedTimeScope, use CEST timezone
-    const now = Date.now() - 1000 * 60 * 60 * 2; // 2 hours seems to fix it..?
+    const now = Date.now() - 1000 * 60 * 60 * 1; // 1 hours seems to fix it - 1 and 5 minutes should actually have few datapoints, not a whole hour.
     const timeScopeValue = timeScopes[selectedTimeScope];
     const filteredStats = stats.filter((stat) => {
         const timestamp = new Date(stat.timestamp);
@@ -62,7 +153,8 @@ async function updateDashboard() {
     // Map latest stats per company
     const companyLatestStats = {};
     filteredStats.forEach((stat) => {
-        const companyId = stat.company_id;
+        const companyId = stat.company_id.toString();
+        if (selectedCompanies.length > 0 && !selectedCompanies.includes(companyId)) return;
         const timestamp = new Date(stat.timestamp);
         if (!companyLatestStats[companyId] || timestamp > companyLatestStats[companyId].timestamp) {
             companyLatestStats[companyId] = {
@@ -72,21 +164,19 @@ async function updateDashboard() {
         }
     });
 
-    // Update Leaderboard with more stats
+    // Update Leaderboard with selected metrics
     const leaderboardDiv = document.getElementById('leaderboard');
     leaderboardDiv.innerHTML = companies
+        .filter((company) => selectedCompanies.length === 0 || selectedCompanies.includes(company.company_id.toString()))
         .map((company) => {
             const latestStat = companyLatestStats[company.company_id] || {};
             return `
                 <div class="mb-2">
                     <strong>${company.company_name}</strong> (Manager: ${company.manager})
                     <ul>
-                        <li>Money: ${latestStat.money || 'N/A'}</li>
-                        <li>Income: ${latestStat.income || 'N/A'}</li>
-                        <li>Loan: ${latestStat.loan || 'N/A'}</li>
-                        <li>Performance Last Quarter: ${latestStat.perf_lastq || 'N/A'}</li>
-                        <li>Trains: ${latestStat.trains_count || 'N/A'}</li>
-                        <!-- Add more stats as needed -->
+                        ${selectedMetrics
+                            .map((metric) => `<li>${metric}: ${latestStat[metric] || 'N/A'}</li>`)
+                            .join('')}
                     </ul>
                 </div>
             `;
@@ -96,13 +186,15 @@ async function updateDashboard() {
     // Map company_id to company_name
     const companyMap = {};
     companies.forEach((company) => {
-        companyMap[company.company_id] = company.company_name;
+        companyMap[company.company_id.toString()] = company.company_name;
     });
 
     // Prepare data per company
     const companyData = {};
     filteredStats.forEach((stat) => {
-        const companyId = stat.company_id;
+        const companyId = stat.company_id.toString();
+        if (selectedCompanies.length > 0 && !selectedCompanies.includes(companyId)) return;
+
         if (!companyData[companyId]) {
             companyData[companyId] = {
                 company_name: companyMap[companyId] || 'Unknown',
@@ -114,100 +206,71 @@ async function updateDashboard() {
         // Push data point
         companyData[companyId].data.push({
             x: timestamp,
-            money: stat.money,
-            loan: stat.loan,
-            income: stat.income,
-            value_lastq: stat.value_lastq,
-            value_prevq: stat.value_prevq,
-            perf_lastq: stat.perf_lastq,
-            perf_prevq: stat.perf_prevq,
-            deliver_lastq: stat.deliver_lastq,
-            deliver_prevq: stat.deliver_prevq,
-            trains_count: stat.trains_count,
-            lorries_count: stat.lorries_count,
-            busses_count: stat.busses_count,
-            planes_count: stat.planes_count,
-            ships_count: stat.ships_count,
+            ...stat,
         });
     });
-
-    // Metrics to plot
-    const metrics = ['money', 'income', 'loan']; // Add more metrics as needed
 
     // Prepare datasets for chart.js
     const datasets = [];
     Object.keys(companyData).forEach((companyId) => {
         const company = companyData[companyId];
-        metrics.forEach((metric) => {
-            const existingDataset =
-                window.companyStatsChart
-                    ? window.companyStatsChart.data.datasets.find(
-                          (ds) => ds.label === `${company.company_name} - ${metric}`
-                      )
-                    : null;
+        selectedMetrics.forEach((metric) => {
             const dataPoints = company.data
                 .sort((a, b) => a.x - b.x)
                 .map((d) => ({ x: d.x, y: d[metric] }));
-            if (existingDataset) {
-                // Update existing dataset
-                existingDataset.data = dataPoints;
-            } else {
-                // Create new dataset
-                datasets.push({
-                    label: `${company.company_name} - ${metric}`,
-                    data: dataPoints,
-                    fill: false,
-                    tension: 0.1,
-                });
-            }
+            datasets.push({
+                label: `${company.company_name} - ${metric}`,
+                data: dataPoints,
+                fill: false,
+                tension: 0.1,
+            });
         });
     });
 
-    // If chart exists, update it; otherwise, create a new one
+    // If chart exists, destroy and recreate it; otherwise, create a new one
+    const ctx = document.getElementById('company-stats-chart').getContext('2d');
     if (window.companyStatsChart) {
-        window.companyStatsChart.update();
-    } else {
-        const ctx = document.getElementById('company-stats-chart').getContext('2d');
-        window.companyStatsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: datasets,
+        window.companyStatsChart.destroy();
+    }
+    window.companyStatsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: datasets,
+        },
+        options: {
+            interaction: {
+                mode: 'index',
+                intersect: false,
             },
-            options: {
-                interaction: {
+            plugins: {
+                legend: {
+                    display: true,
+                },
+                tooltip: {
                     mode: 'index',
                     intersect: false,
                 },
-                plugins: {
-                    legend: {
-                        display: true,
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'minute',
                     },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
+                    title: {
+                        display: true,
+                        text: 'Time',
                     },
                 },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'minute',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Time',
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Value',
-                        },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Value',
                     },
                 },
             },
-        });
-    }
+        },
+    });
 }
 
 // Fetch and update data every 10 seconds
