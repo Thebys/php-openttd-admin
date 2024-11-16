@@ -25,8 +25,8 @@ if (!file_exists($config['database_path'])) {
 
 Capsule::schema()->create('servers', function ($table) {
     $table->increments('id');
-    $table->string('ip');
-    $table->integer('admin_port');
+    $table->string('host');
+    $table->integer('port');
     $table->string('name');
     $table->timestamp('last_updated')->useCurrent();
 });
