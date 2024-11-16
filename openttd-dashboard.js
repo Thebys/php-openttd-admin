@@ -211,5 +211,5 @@ async function updateDashboard() {
 }
 
 // Fetch and update data every 10 seconds
-// setInterval(updateDashboard, 10000);
+setInterval(updateDashboard, 10000);
 updateDashboard();
