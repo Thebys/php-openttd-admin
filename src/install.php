@@ -27,6 +27,7 @@ Capsule::schema()->create('servers', function ($table) {
     $table->string('host');
     $table->integer('port');
     $table->string('server_name')->nullable();
+    $table->string('map_seed')->nullable();
     $table->timestamp('last_updated')->useCurrent();
 });
 

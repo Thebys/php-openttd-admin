@@ -8,6 +8,5 @@ return [
             'password' => 'CHANGETHIS',
         ] 
     ],
-    'update_interval' => 30, // In seconds
-    'database_path' => __DIR__ . '\openttd_stats.db',
+    'database_path' => __DIR__ . '/openttd_stats.db',
 ];
