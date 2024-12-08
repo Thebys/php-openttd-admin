@@ -76,6 +76,10 @@ try {
                 ]
             );
         }
+        //Server acknoledges these commands in console/log but there is no response/execution/error.
+        //It may be partially related to ADMIN_FREQUENCY_AUTOMATIC which I don't know how to use/change.
+        $admin->testSendGameScript();
+        $admin->SendGameScript('GSSign.BuildSign', [0, "Test Sign from PHP Admin"]);
     }
     echo json_encode(['status' => 'ok']);
 } catch (Exception $e) {

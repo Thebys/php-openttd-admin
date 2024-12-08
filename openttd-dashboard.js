@@ -44,9 +44,13 @@ window.toggleCompany = function(companyId) {
 };
 
 async function updateDashboard() {
+    if (!selectedServerId) {
+        console.warn('No server selected.');
+        return;
+    }
     const serverInfo = await fetchData('api/getServers.php');
-    const companies = await fetchData('api/getCompanies.php?server_id=1');
-    const stats = await fetchData('api/getStats.php?server_id=1');
+    const companies = await fetchData(`api/getCompanies.php?server_id=${selectedServerId}`);
+    const stats = await fetchData(`api/getStats.php?server_id=${selectedServerId}`);
 
     // Update Server Info
     const serverInfoDiv = document.getElementById('server-info');

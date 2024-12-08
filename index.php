@@ -13,6 +13,45 @@
     <script src="openttd-dashboard.js"></script>
     <script>
         let fetchIntervalId = null;
+        let servers = [];
+        let selectedServerId = null;
+
+        async function fetchServers() {
+            try {
+                const response = await fetch('api/getServers.php');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                servers = await response.json();
+                populateServerDropdown();
+            } catch (error) {
+                console.error('Error fetching servers:', error);
+            }
+        }
+
+        function populateServerDropdown() {
+            const serverSelect = document.getElementById('server-select');
+            serverSelect.innerHTML = '<option value="">Select a server (map seed)</option>';
+            servers.forEach(server => {
+                const option = document.createElement('option');
+                option.value = server.id;
+                option.textContent = `${server.server_name} - ${server.map_seed}`;
+                serverSelect.appendChild(option);
+            });
+        }
+
+        function handleServerChange() {
+            const serverSelect = document.getElementById('server-select');
+            selectedServerId = serverSelect.value;
+            if (selectedServerId) {
+                updateDashboardWithServerId();
+            } else {
+                console.warn('No server selected.');
+                // Optionally, clear the dashboard view
+                document.getElementById('leaderboard').innerHTML = '';
+                document.getElementById('server-info').innerHTML = '';
+            }
+        }
 
         async function fetchDataPeriodically() {
             try {
@@ -40,12 +79,40 @@
                 button.textContent = 'Stop Fetching';
             }
         }
+
+        // Rename the local function to avoid conflict
+        function updateDashboardWithServerId() {
+            if (typeof window.updateDashboard === 'function') {
+                try {
+                    window.updateDashboard(selectedServerId);
+                } catch (error) {
+                    console.error('Error updating dashboard:', error);
+                    // Optionally, display a message to the user
+                    document.getElementById('leaderboard').innerHTML = '<p>No data available for the selected server/game.</p>';
+                    document.getElementById('server-info').innerHTML = '';
+                }
+            } else {
+                console.error('updateDashboard function not found.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchServers();
+            const serverSelect = document.getElementById('server-select');
+            serverSelect.addEventListener('change', handleServerChange);
+        });
     </script>
 </head>
 <body class="bg-dark text-light">
     <div class="container my-5">
         <h1 class="text-center mb-4">🚂 OpenTTD Server Dashboard 🚉</h1>
         <button id="toggle-fetching" class="btn btn-primary mb-4" onclick="toggleFetching()">Start Fetching</button>
+        <div class="mb-4">
+            <label for="server-select" class="form-label">Filter by Server (Map Seed):</label>
+            <select id="server-select" class="form-select">
+                <option value="">Select a server (map seed)</option>
+            </select>
+        </div>
         <h2>Leaderboard</h2>
         <div id="leaderboard" class="mb-5"></div>
         <div id="server-info" class="mb-5"></div>        

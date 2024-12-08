@@ -4,7 +4,6 @@ namespace Thebys\PhpOpenttdStats;
 
 class OttdAdmin
 {
-
     const USER_NAME_DEFAULT = "PHP OttdAdmin";
     const VERSION = '0.1.0';
     const RECIVE_LOOP_TIMING = 1;
@@ -72,6 +71,15 @@ class OttdAdmin
     private $port;
     private $sock;
     private $server  = [];
+
+    // Define the frequency constants
+    const ADMIN_FREQUENCY_POLL = 0x01;
+    const ADMIN_FREQUENCY_DAILY = 0x02;
+    const ADMIN_FREQUENCY_WEEKLY = 0x04;
+    const ADMIN_FREQUENCY_MONTHLY = 0x08;
+    const ADMIN_FREQUENCY_QUARTERLY = 0x10;
+    const ADMIN_FREQUENCY_ANUALLY = 0x20;
+    const ADMIN_FREQUENCY_AUTOMATIC = 0x40;
 
     public function __construct($ip = "127.0.0.1", $port = 3977, $password = null)
     {
@@ -160,7 +168,7 @@ class OttdAdmin
             if (array_key_exists(strtolower($type), $readableTypes)) {
                 $type = $readableTypes[strtolower($type)];
             } else {
-                throw new Exception("Unknown pack type: $type", 640);
+                throw new \Exception("Unknown pack type: $type", 640);
             }
         }
         if ($bool_as_char && $type == 'B')
@@ -190,7 +198,8 @@ class OttdAdmin
         }
         $packet = chr(strlen($packet) + 2) . chr(0) . $packet;
         $sent = socket_write($this->sock, $packet, strlen($packet));
-        //echo $sent."B >> ".$this->debug_datarender($packet)."\n";
+
+        var_dump("Sent " . $sent . "B >> " . $this->debug_datarender($packet) . "\n");
         return $sent;
     }
 
@@ -224,6 +233,10 @@ class OttdAdmin
         $raw = socket_read($this->sock, $read - 2);
         //$rawResponse = ($read+2)."B << ".$this->debug_datarender($len.$raw)."\n";
         $recivedMode = ord($raw[0]);
+
+        // Log the received packet
+        var_dump("Received packet mode: $recivedMode\n");
+        var_dump("Raw data: " . $this->debug_datarender($raw) . "\n");
 
         if (!is_null($packetMode) && $recivedMode == $packetMode) {
             return substr($raw, 1);
@@ -287,10 +300,10 @@ class OttdAdmin
     }
 
     /**
-     * Join server as adminstrator
-     * @param string $password (optional if set in construstor)
+     * Join server as administrator
+     * @param string $password (optional if set in constructor)
      * @param string $name - Administration system name (will be visible in server's console)
-     * @return array Server info - as recived after joining server
+     * @return array Server info - as received after joining server
      */
     public function join($password = null, $name = null)
     {
@@ -344,8 +357,33 @@ class OttdAdmin
             'MAP_Y'          => 'uint16',
         ];
         $this->server = array_merge($this->server, $this->unpackPro($data, $format));
-
         return $this->server;
+    }
+
+    /**
+     * Set the update frequency for a specific update type
+     * @param string $updateType The type of update (from ADMIN_REQUESTS array)
+     * @param int $frequency The frequency to set (use ADMIN_FREQUENCY_* constants)
+     */
+    public function setUpdateFrequency(string $updateType, int $frequency) 
+    {
+        if (!in_array($updateType, self::ADMIN_REQESTS)) {
+            throw new \Exception("Unknown update type: $updateType");
+        }
+        
+        $updateId = array_search($updateType, self::ADMIN_REQESTS);
+        $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_UPDATE_FREQUENCY, [
+            ['uint16', $updateId],
+            ['uint16', $frequency]
+        ]);
+    }
+
+    /**
+     * Helper method to enable automatic updates for Game Script messages
+     */
+    public function enableGameScriptUpdates() 
+    {
+        $this->setUpdateFrequency('ADMIN_UPDATE_GAMESCRIPT', self::ADMIN_FREQUENCY_AUTOMATIC);
     }
 
     /**
@@ -355,6 +393,7 @@ class OttdAdmin
      */
     private function onRecive($event, $data)
     {
+        $reply = '';
         $recivableEvents = [
             100 => 'ADMIN_PACKET_SERVER_FULL',
             101 => 'ADMIN_PACKET_SERVER_BANNED',
@@ -385,12 +424,21 @@ class OttdAdmin
             126 => 'ADMIN_PACKET_SERVER_PONG',
             255 => 'INVALID_ADMIN_PACKET',
         ];
-        if (array_key_exists($event, $recivableEvents)) {
-            echo "Recived message: '" . $recivableEvents[$event] . "'...\n";
-        } else {
-            echo "Recived message: UNKNOWN=" . $event . " ...\n";
+        if($event == 124) {
+            if ($data['action'] == 'ping') {
+                $reply = (['action' => 'pong', 'number' => $data['number']]);                
+            }
+            else {
+                $reply = "Unknown GSaction: " . $data['action'] . "\n";
+            }
         }
-        echo "<< " . $this->debug_datarender($data) . "\n";
+        if (array_key_exists($event, $recivableEvents)) {
+            $reply = "Recived message: '" . $recivableEvents[$event] . "'...\n";
+        } else {
+            $reply = "Recived message: UNKNOWN=" . $event . " ...\n";
+        }
+        $reply .= "<< " . $this->debug_datarender($data) . "\n";
+        var_dump($reply);
     }
 
     /**
@@ -420,10 +468,10 @@ class OttdAdmin
     {
         $command = strtoupper($command);
         if (!in_array($command, self::ADMIN_REQESTS)) {
-            throw new Exception("Unknown request!", 54);
+            throw new \Exception("Unknown request!", 54);
         }
         if (!$this->server["ADMIN_UPDATE"][$command]["ADMIN_FREQUENCY_POLL"]) {
-            throw new Exception("Unable to poll '$command' manualy!", 55);
+            throw new \Exception("Unable to poll '$command' manualy!", 55);
         }
         $cmdId = array_search($command, self::ADMIN_REQESTS);
         return $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_POLL, [
@@ -633,7 +681,7 @@ class OttdAdmin
                 echo "RCON Command End: " . $unpacked['COMMAND'] . "\n";
                 break;
             } else {
-                throw new Exception("Unexpected packet received: " . $response->mode, 990);
+                throw new \Exception("Unexpected packet received: " . $response->mode, 990);
             }
         }
 
@@ -673,32 +721,44 @@ class OttdAdmin
             $message,
         ]);
     }
-    public function sendCustomNews($message = "Breaking News: Custom message from PHP Admin API!", $companyId = 0xFF, $reference = 0)
+
+    /**
+     * Send GameScript command
+     * Requires serverGS enabled on server!
+     * @param string $method The method to call on the server
+     * @param array $args Arguments for the method
+     * @param int|null $companymode Optional company mode
+     */
+    public function sendGameScript($method, array $args = [], $companymode = null)
     {
-        $cmdId = 85;  // Index of CmdCustomNewsItem
-        $flags = 0x3; // Flags: DC_EXEC | DC_ALLOW
-        $newsType = 0;  // NT_GENERAL
-        $refType = 0;   // NRT_NONE
-        $companyId = 0xFF; // For all players
-        $reference = 0; // No specific reference
-        
-        // Prepare the data packet for DoCommand
-        $commandData = [
-            ['uint16', $cmdId],
-            ['uint16', $flags],
-            ['uint8', $newsType],
-            ['uint8', $refType],
-            ['uint8', $companyId],
-            ['uint32', $reference],
-            ['string', $message]
+        $command = [
+            'action' => 'call',
+            'method' => $method,
+            'args' => $args
         ];
-        
-        // Send the packet as a GameScript command
-        $response = $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_GAMESCRIPT, $commandData);
-        
-        // Output the response
-        echo "Response: ";
-        print_r($response);
-        
+
+        if ($companymode !== null) {
+            $command['companymode'] = $companymode;
+        }
+
+        $json = json_encode($command);
+        // replace " with ' 
+        //$json = str_replace('"', "'", $json);
+        $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_GAMESCRIPT, [$json]);
+    }
+
+    /**
+     * Test the sendGameScript method
+     */
+    public function testSendGameScript(int $number = null)
+    {
+        $command = [
+            'action' => 'ping',
+            'number' => $number ?? random_int(0, 100)
+        ];
+
+        $json = json_encode($command);
+        $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_GAMESCRIPT, [$json]);
+        $this->awaitPacket(self::ADMIN_PACKET_SERVER_GAMESCRIPT, null, 10000);
     }
 }
