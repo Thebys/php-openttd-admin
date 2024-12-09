@@ -71,6 +71,7 @@ class OttdAdmin
     private $port;
     private $sock;
     private $server  = [];
+    private $logger;
 
     // Define the frequency constants
     const ADMIN_FREQUENCY_POLL = 0x01;
@@ -86,6 +87,7 @@ class OttdAdmin
         $this->password = $password;
         $this->ip = $ip;
         $this->port = $port;
+        $this->logger = new MessageLogger();
     }
 
     /**
@@ -199,7 +201,12 @@ class OttdAdmin
         $packet = chr(strlen($packet) + 2) . chr(0) . $packet;
         $sent = socket_write($this->sock, $packet, strlen($packet));
 
-        var_dump("Sent " . $sent . "B >> " . $this->debug_datarender($packet) . "\n");
+        $this->logger->log(
+            $this->getPacketName($packetMode),
+            'sent',
+            $this->debug_datarender($packet)
+        );
+
         return $sent;
     }
 
@@ -229,14 +236,21 @@ class OttdAdmin
 
         $read = unpack('v', $len);
         $read = $read[1];
-        //echo "To read: $read\n";
+        //echo "To read: $read";
         $raw = socket_read($this->sock, $read - 2);
-        //$rawResponse = ($read+2)."B << ".$this->debug_datarender($len.$raw)."\n";
+        //$rawResponse = ($read+2)."B << ".$this->debug_datarender($len.$raw)."";
         $recivedMode = ord($raw[0]);
 
         // Log the received packet
-        var_dump("Received packet mode: $recivedMode\n");
-        var_dump("Raw data: " . $this->debug_datarender($raw) . "\n");
+        $this->logger->log(
+            $this->getPacketName($recivedMode),
+            'received',
+            $this->debug_datarender($raw),
+            [
+                'mode' => $recivedMode,
+                'data' => substr($raw, 1)
+            ]
+        );
 
         if (!is_null($packetMode) && $recivedMode == $packetMode) {
             return substr($raw, 1);
@@ -429,16 +443,26 @@ class OttdAdmin
                 $reply = (['action' => 'pong', 'number' => $data['number']]);                
             }
             else {
-                $reply = "Unknown GSaction: " . $data['action'] . "\n";
+                $reply = "Unknown GSaction: " . $data['action'];
             }
         }
         if (array_key_exists($event, $recivableEvents)) {
-            $reply = "Recived message: '" . $recivableEvents[$event] . "'...\n";
+            $reply = "Recived message: '" . $recivableEvents[$event] . "'...";
         } else {
-            $reply = "Recived message: UNKNOWN=" . $event . " ...\n";
+            $reply = "Recived message: UNKNOWN=" . $event . "...";
         }
-        $reply .= "<< " . $this->debug_datarender($data) . "\n";
-        var_dump($reply);
+        $reply .= "<< " . $this->debug_datarender($data);
+        
+        $this->logger->log(
+            $this->getPacketName($event),
+            'received',
+            $this->debug_datarender($data),
+            [
+                'mode' => $event,
+                'data' => $data
+            ]
+        );
+
     }
 
     /**
@@ -652,7 +676,7 @@ class OttdAdmin
      */
     public function console(string $command, bool $simpleOutput = true)
     {
-        echo "Sending RCON command: $command\n";
+        echo "Sending RCON command: $command";    
         $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_RCON, [$command]);
 
         $output = [];
@@ -660,11 +684,11 @@ class OttdAdmin
             $response = $this->awaitPacket([self::ADMIN_PACKET_SERVER_RCON, self::ADMIN_PACKET_SERVER_RCON_END]);
 
             if ($response === null) {
-                echo "No response received. Exiting loop.\n";
+                echo "No response received. Exiting loop.";
                 break;
             }
 
-            echo "Received response packet: " . $response->mode . "\n";
+            echo "Received response packet: " . $response->mode;
 
             if ($response->mode == self::ADMIN_PACKET_SERVER_RCON) {
                 $unpacked = $this->unpackPro($response->data, [
@@ -672,13 +696,13 @@ class OttdAdmin
                     "TEXT" => "string"
                 ]);
                 $output[] = $unpacked;
-                echo "RCON Output: " . $unpacked['TEXT'] . "\n";
+                echo "RCON Output: " . $unpacked['TEXT'];
             } elseif ($response->mode == self::ADMIN_PACKET_SERVER_RCON_END) {
                 $unpacked = $this->unpackPro($response->data, [
                     "COMMAND" => "string"
                 ]);
                 $output[] = $unpacked;
-                echo "RCON Command End: " . $unpacked['COMMAND'] . "\n";
+                echo "RCON Command End: " . $unpacked['COMMAND'];
                 break;
             } else {
                 throw new \Exception("Unexpected packet received: " . $response->mode, 990);
@@ -760,5 +784,28 @@ class OttdAdmin
         $json = json_encode($command);
         $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_GAMESCRIPT, [$json]);
         $this->awaitPacket(self::ADMIN_PACKET_SERVER_GAMESCRIPT, null, 10000);
+    }
+
+    /**
+     * Add helper method to get packet names
+     * @param int $packetMode Packet Format (see class's constants)
+     * @return string Packet name
+     */
+    private function getPacketName($packetMode) {
+        $constants = (new \ReflectionClass($this))->getConstants();
+        foreach ($constants as $name => $value) {
+            if ($value === $packetMode && strpos($name, 'ADMIN_PACKET_') === 0) {
+                return $name;
+            }
+        }
+        return "UNKNOWN_PACKET_{$packetMode}";
+    }
+
+    /**
+     * Get the logger
+     * @return MessageLogger Logger instance
+     */
+    public function getLogger() {
+        return $this->logger;
     }
 }
