@@ -58,13 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $client->connect();
 
         if ($action === 'test') {
-            $result = $client->testGameScript();
+            $client->testGameScript();
         } else {
             if (empty($command)) {
                 throw new Exception("Command cannot be empty");
             }
             $command = json_decode($command, true);
-            $result = $client->executeCommand($command['method'], $command['args'], null, $command['number'], true);
+            $client->executeCommand($command['method'], $command['args'] ?? [], null, $command['number'], true);
         }
 
         // Get formatted messages as array instead of JSON string

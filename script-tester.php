@@ -1,5 +1,20 @@
 <?php
 require 'src/bootstrap.php';
+
+$commandTemplates = [
+    'get_company_name' => [
+        'name' => 'Get Company Name | GSCompany.GetName | [0]',
+        'command' => '{"action": "call", "number": 123456789, "method": "GSCompany.GetName","args": [0]}'
+    ],
+    'pause_game' => [
+        'name' => 'Pause Game | GSGame.Pause | []',
+        'command' => '{"action": "call", "number": 123456789, "method": "GSGame.Pause","args": []}'
+    ],
+    'unpause_game' => [
+        'name' => 'Unpause Game | GSGame.Unpause | []',
+        'command' => '{"action": "call", "number": 123456789, "method": "GSGame.Unpause","args": []}'
+    ]
+];
 ?>
 <!DOCTYPE html>
 <html>
@@ -22,6 +37,9 @@ require 'src/bootstrap.php';
         textarea {
             width: 100%;
             margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
         textarea {
@@ -39,6 +57,12 @@ require 'src/bootstrap.php';
 
         .button-group button {
             margin-right: 10px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -58,8 +82,18 @@ require 'src/bootstrap.php';
             </div>
 
             <div>
+                <label for="template">Select Command Template:</label>
+                <select name="template" id="template" onchange="updateCommand()">
+                    <option value="">-- Select Template --</option>
+                    <?php foreach ($commandTemplates as $key => $template): ?>
+                        <option value="<?= $key ?>"><?= $template['name'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div>
                 <label for="command">Command (JSON):</label>
-                <textarea name="command" id="command">{"action": "call", "number": 123456789, "method": "GSCompany.GetName","args": [0]}</textarea>
+                <textarea name="command" id="command"></textarea>
             </div>
 
             <div class="button-group">
@@ -79,6 +113,21 @@ require 'src/bootstrap.php';
         </button>
         <textarea id="response" class="response" style="font-size: 10px;"></textarea>
     </div>
+    <script>
+        const commandTemplates = <?= json_encode($commandTemplates) ?>;
+        
+        function updateCommand() {
+            const select = document.getElementById('template');
+            const command = document.getElementById('command');
+            const selectedTemplate = select.value;
+            
+            if (selectedTemplate && commandTemplates[selectedTemplate]) {
+                command.value = commandTemplates[selectedTemplate].command;
+            } else {
+                command.value = '';
+            }
+        }
+    </script>
 </body>
 
 </html>

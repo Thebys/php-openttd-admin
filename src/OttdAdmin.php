@@ -759,9 +759,8 @@ class OttdAdmin
             'action' => 'call',
             'method' => $method,
             'number' => $number ?? random_int(0, 999),
-            'args' => $args
+            'args' => $args ?? []
         ];
-
         if ($companymode !== null) {
             $command['companymode'] = $companymode;
         }
