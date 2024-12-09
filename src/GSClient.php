@@ -28,10 +28,10 @@ class GSClient
         return true;
     }
 
-    public function executeCommand($method, array $args = [], $companymode = null)
+    public function executeCommand($method, array $args = [], $companymode = null, $number = null, $waitForResponse = false)
     {
-        // Send the command and get response
-        $this->admin->sendGameScript($method, $args, $companymode);
+        // Send the command
+        $this->admin->sendGameScript($method, $args, $companymode, $number, $waitForResponse);
     }
 
     public function testGameScript()
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $serverId = $_POST['server'] ?? 0;
         $command = $_POST['command'] ?? '';
-        $action = $_POST['action'] ?? 'execute';
+        $action = $_POST['action'] ?? 'call';
 
         $client = new GSClient($config['servers'][$serverId]);
         $client->connect();
@@ -63,18 +63,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty($command)) {
                 throw new Exception("Command cannot be empty");
             }
-            $result = $client->executeCommand($command);
+            $command = json_decode($command, true);
+            $result = $client->executeCommand($command['method'], $command['args'], null, $command['number'], true);
         }
-        
+
         // Get formatted messages as array instead of JSON string
         $messages = $client->getLogger()->getFormattedMessages();
-        
+
         header('Content-Type: application/json');
         echo json_encode([
             'status' => 'success',
             'result' => $messages  // Pass the array directly
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
     } catch (Exception $e) {
         header('Content-Type: application/json');
         echo json_encode([

@@ -59,25 +59,25 @@ require 'src/bootstrap.php';
 
             <div>
                 <label for="command">Command (JSON):</label>
-                <textarea name="command" id="command">{
-                    "Some": "Command",
-                    "in": "JSON",
-                    "IdontKnow": "What to put here"
-}</textarea>
+                <textarea name="command" id="command">{"action": "call", "number": 123456789, "method": "GSCompany.GetName","args": [0]}</textarea>
             </div>
 
             <div class="button-group">
 
-                <button type="submit" name="action" value="execute">Send Command</button>
+
             </div>
         </form>
         <button hx-post="src/GSClient.php"
-                    hx-target="#response"
-                    hx-vals='js:{"server": document.getElementById("server").value, "action": "test"}'>
-                    Ping Server
-                </button>
-
-        <textarea id="response" class="response" style="font-size: 10px;"></textarea>        
+            hx-target="#response"
+            hx-vals='js:{"server": document.getElementById("server").value, "action": "test"}'>
+            Ping Server
+        </button>
+        <button hx-post="src/GSClient.php"
+            hx-target="#response"
+            hx-vals='js:{"server": document.getElementById("server").value, "command": document.getElementById("command").value}'>
+            Send Command
+        </button>
+        <textarea id="response" class="response" style="font-size: 10px;"></textarea>
     </div>
 </body>
 

@@ -379,12 +379,12 @@ class OttdAdmin
      * @param string $updateType The type of update (from ADMIN_REQUESTS array)
      * @param int $frequency The frequency to set (use ADMIN_FREQUENCY_* constants)
      */
-    public function setUpdateFrequency(string $updateType, int $frequency) 
+    public function setUpdateFrequency(string $updateType, int $frequency)
     {
         if (!in_array($updateType, self::ADMIN_REQESTS)) {
             throw new \Exception("Unknown update type: $updateType");
         }
-        
+
         $updateId = array_search($updateType, self::ADMIN_REQESTS);
         $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_UPDATE_FREQUENCY, [
             ['uint16', $updateId],
@@ -395,7 +395,7 @@ class OttdAdmin
     /**
      * Helper method to enable automatic updates for Game Script messages
      */
-    public function enableGameScriptUpdates() 
+    public function enableGameScriptUpdates()
     {
         $this->setUpdateFrequency('ADMIN_UPDATE_GAMESCRIPT', self::ADMIN_FREQUENCY_AUTOMATIC);
     }
@@ -438,11 +438,12 @@ class OttdAdmin
             126 => 'ADMIN_PACKET_SERVER_PONG',
             255 => 'INVALID_ADMIN_PACKET',
         ];
-        if($event == 124) {
-            if ($data['action'] == 'ping') {
-                $reply = (['action' => 'pong', 'number' => $data['number']]);                
-            }
-            else {
+        if ($event == 124) {
+            if (isset($data['action'])) {
+                if ($data['action'] == 'ping') {
+                    $reply = (['action' => 'pong', 'number' => $data['number']]);
+                }
+            } else {
                 $reply = "Unknown GSaction: " . $data['action'];
             }
         }
@@ -452,7 +453,7 @@ class OttdAdmin
             $reply = "Recived message: UNKNOWN=" . $event . "...";
         }
         $reply .= "<< " . $this->debug_datarender($data);
-        
+
         $this->logger->log(
             $this->getPacketName($event),
             'received',
@@ -462,7 +463,6 @@ class OttdAdmin
                 'data' => $data
             ]
         );
-
     }
 
     /**
@@ -676,7 +676,7 @@ class OttdAdmin
      */
     public function console(string $command, bool $simpleOutput = true)
     {
-        echo "Sending RCON command: $command";    
+        echo "Sending RCON command: $command";
         $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_RCON, [$command]);
 
         $output = [];
@@ -753,22 +753,26 @@ class OttdAdmin
      * @param array $args Arguments for the method
      * @param int|null $companymode Optional company mode
      */
-    public function sendGameScript($method, array $args = [], $companymode = null)
+    public function sendGameScript($method, array $args = [], $companymode = null, $number = null, $waitForResponse = false)
     {
         $command = [
             'action' => 'call',
             'method' => $method,
+            'number' => $number ?? random_int(0, 999),
             'args' => $args
         ];
 
         if ($companymode !== null) {
             $command['companymode'] = $companymode;
         }
-
+        if ($waitForResponse) {
+            $this->enableGameScriptUpdates();
+        }
         $json = json_encode($command);
-        // replace " with ' 
-        //$json = str_replace('"', "'", $json);
         $this->sendAsPacket(self::ADMIN_PACKET_ADMIN_GAMESCRIPT, [$json]);
+        if ($waitForResponse) {
+            $this->awaitPacket(self::ADMIN_PACKET_SERVER_GAMESCRIPT, null, 10000);
+        }
     }
 
     /**
@@ -791,7 +795,8 @@ class OttdAdmin
      * @param int $packetMode Packet Format (see class's constants)
      * @return string Packet name
      */
-    private function getPacketName($packetMode) {
+    private function getPacketName($packetMode)
+    {
         $constants = (new \ReflectionClass($this))->getConstants();
         foreach ($constants as $name => $value) {
             if ($value === $packetMode && strpos($name, 'ADMIN_PACKET_') === 0) {
@@ -805,7 +810,8 @@ class OttdAdmin
      * Get the logger
      * @return MessageLogger Logger instance
      */
-    public function getLogger() {
+    public function getLogger()
+    {
         return $this->logger;
     }
 }
