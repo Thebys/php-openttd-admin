@@ -4,8 +4,8 @@ namespace Thebys\PhpOpenttdStats;
 
 class OttdAdmin
 {
-    const USER_NAME_DEFAULT = "PHP OttdAdmin";
-    const VERSION = '0.1.0';
+    const USER_NAME_DEFAULT = "PHP OTTDAdmin";
+    const VERSION = '14.1.0';
     const RECIVE_LOOP_TIMING = 1;
 
     const ADMIN_PACKET_ADMIN_JOIN = 0;
@@ -45,10 +45,14 @@ class OttdAdmin
     const ADMIN_PACKET_SERVER_RCON = 120;
     const ADMIN_PACKET_SERVER_CONSOLE = 121;
     const ADMIN_PACKET_SERVER_CMD_NAMES = 122;
-    const ADMIN_PACKET_SERVER_CMD_LOGGING = 123;
+    const ADMIN_PACKET_SERVER_CMD_LOGGING_OLD = 123;
     const ADMIN_PACKET_SERVER_GAMESCRIPT = 124;
     const ADMIN_PACKET_SERVER_RCON_END = 125;
     const ADMIN_PACKET_SERVER_PONG = 126;
+    
+    const ADMIN_PACKET_SERVER_CMD_LOGGING = 127;
+    const ADMIN_PACKET_SERVER_AUTH_REQUEST = 128;
+    const ADMIN_PACKET_SERVER_ENABLE_ENCRYPTION = 129;
 
     const INVALID_ADMIN_PACKET = 255;
 
@@ -432,11 +436,15 @@ class OttdAdmin
             120 => 'ADMIN_PACKET_SERVER_RCON',
             121 => 'ADMIN_PACKET_SERVER_CONSOLE',
             122 => 'ADMIN_PACKET_SERVER_CMD_NAMES',
-            123 => 'ADMIN_PACKET_SERVER_CMD_LOGGING',
+            123 => 'ADMIN_PACKET_SERVER_CMD_LOGGING_OLD',
             124 => 'ADMIN_PACKET_SERVER_GAMESCRIPT',
             125 => 'ADMIN_PACKET_SERVER_RCON_END',
             126 => 'ADMIN_PACKET_SERVER_PONG',
+            127 => 'ADMIN_PACKET_SERVER_CMD_LOGGING',
+            128 => 'ADMIN_PACKET_SERVER_AUTH_REQUEST',
+            129 => 'ADMIN_PACKET_SERVER_ENABLE_ENCRYPTION',
             255 => 'INVALID_ADMIN_PACKET',
+
         ];
         if ($event == 124) {
             if (isset($data['action'])) {
