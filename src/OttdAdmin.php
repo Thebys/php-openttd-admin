@@ -141,7 +141,7 @@ class OttdAdmin
                 if (ord($sym) == 0) {
                     $r .= "~";
                 } else {
-                    $r .= "{" . (ord($sym)) . "}";
+                    $r .= "(" . (ord($sym)) . ")";
                 }
             } else {
                 $r .= $sym;
@@ -446,21 +446,6 @@ class OttdAdmin
             255 => 'INVALID_ADMIN_PACKET',
 
         ];
-        if ($event == 124) {
-            if (isset($data['action'])) {
-                if ($data['action'] == 'ping') {
-                    $reply = (['action' => 'pong', 'number' => $data['number']]);
-                }
-            } else {
-                $reply = "Unknown GSaction: " . $data['action'];
-            }
-        }
-        if (array_key_exists($event, $recivableEvents)) {
-            $reply = "Recived message: '" . $recivableEvents[$event] . "'...";
-        } else {
-            $reply = "Recived message: UNKNOWN=" . $event . "...";
-        }
-        $reply .= "<< " . $this->debug_datarender($data);
 
         $this->logger->log(
             $this->getPacketName($event),

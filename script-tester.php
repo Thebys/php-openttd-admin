@@ -70,6 +70,13 @@ $commandTemplates = [
         .button-group {
             margin: 10px 0;
         }
+        .button-group-item {
+            max-width: 50%;
+            display: flex;
+            flex-direction: row;
+            align-items: start;
+            justify-content: space-between;
+        }
 
         .button-group button {
             margin-right: 10px;
@@ -85,7 +92,7 @@ $commandTemplates = [
 
 <body>
     <div class="container">
-        <h1>OpenTTD Admin Port Server GS Tester</h1>
+        <h1>OpenTTD (Admin Port) Server GS Tester</h1>
 
         <form id="commandForm">
             <div>
@@ -98,7 +105,7 @@ $commandTemplates = [
             </div>
 
             <div>
-                <label for="template">Select Command Template:</label>
+                <label for="template">Select GS Command Template:</label>
                 <select name="template" id="template" onchange="updateCommand()">
                     <option value="">-- Select Template --</option>
                     <?php foreach ($commandTemplates as $key => $template): ?>
@@ -117,26 +124,35 @@ $commandTemplates = [
 
             </div>
         </form>
-        <button hx-post="src/GSClient.php"
-            hx-target="#response"
-            hx-vals='js:{"server": document.getElementById("server").value, "action": "test"}'>
-            Ping Server
-        </button>
-        <button hx-post="src/GSClient.php"
-            hx-target="#response"
-            hx-vals='js:{"server": document.getElementById("server").value, "command": document.getElementById("command").value}'>
-            Send Command
-        </button>
-        <textarea id="response" class="response" style="font-size: 10px;"></textarea>
+        <div class="button-group">
+            <div class="button-group-item">
+                OpenTTD Admin Port + serverGS:
+                <button hx-post="src/GSClient.php"
+                    hx-target="#response"
+                    hx-swap="textContent"
+                    hx-vals='js:{"server": document.getElementById("server").value, "action": "test"}'>
+                    Ping Server
+                </button>
+            </div>
+            <div class="button-group-item">
+                OpenTTD Admin Port + serverGS:
+                <button hx-post="src/GSClient.php"
+                    hx-target="#response"
+                    hx-vals='js:{"server": document.getElementById("server").value, "command": document.getElementById("command").value}'>
+                    Send Command
+                </button>
+            </div>
+        </div>
+        <textarea id="response" class="response" style="font-size: 10px; line-height: 10px; text-wrap:nowrap;"></textarea>
     </div>
     <script>
         const commandTemplates = <?= json_encode($commandTemplates) ?>;
-        
+
         function updateCommand() {
             const select = document.getElementById('template');
             const command = document.getElementById('command');
             const selectedTemplate = select.value;
-            
+
             if (selectedTemplate && commandTemplates[selectedTemplate]) {
                 command.value = commandTemplates[selectedTemplate].command;
             } else {

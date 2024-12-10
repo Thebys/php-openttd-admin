@@ -69,12 +69,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Get formatted messages as array instead of JSON string
         $messages = $client->getLogger()->getFormattedMessages();
-
-        header('Content-Type: application/json');
-        echo json_encode([
-            'status' => 'success',
-            'result' => $messages  // Pass the array directly
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $output = "";
+        header('Content-Type: text/plain');
+        foreach ($messages as $message) {
+            $time = $message['time'];
+            $type = $message['type'];
+            $direction = $message['direction'];
+            $raw_data = $message['raw_data'] ?? "";
+            $decoded = $message['decoded']['mode'] ?? "";
+            $data = $message['decoded']['data'] ?? "";
+            $output .= $time . " " . $type . " " . $direction . " " . $raw_data . " " . $decoded . "-" . $data . "\n";
+        }
+        echo $output;
     } catch (Exception $e) {
         header('Content-Type: application/json');
         echo json_encode([
